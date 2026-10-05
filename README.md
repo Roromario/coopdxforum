@@ -7,19 +7,22 @@ The local PostgreSQL database runs in Docker Compose. The initial schema is in
 when it initializes an empty database volume.
 
 ```powershell
-Copy-Item .env.example .env
 docker compose up -d
 ```
 
-Edit `.env` and replace the example password before starting the database. Do not commit
-`.env`; it is ignored by Git. The database is only published on this computer's localhost
-port `5432`.
+The local development credentials match the class example: database `db`, user `username`,
+password `password`. These fixed credentials are for local development only; do not use them
+for a public or production deployment. PostgreSQL is available on the host at port `15432`.
 
-Connect to PostgreSQL from a database client with host `localhost`, port `5432`, and the
-database/user/password values from `.env`. To open the PostgreSQL shell inside the container:
+Adminer is available at <http://localhost:8887>. Use server `postgres`, port `5432`, and the
+database `db`, user `username`, and password `password` to sign in. ChartDB is available at
+<http://localhost:8888>; use host `postgres` and port `5432` to connect to the database from it.
+
+From a database client running on the host, connect with host `localhost`, port `15432`,
+database `db`, user `username`, and password `password`. To open the PostgreSQL shell inside the container:
 
 ```powershell
-docker compose exec db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
+docker compose exec postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
 ```
 
 In `psql`, verify the imported tables with `\dt` and inspect a table with `\d "Users"`.
@@ -31,5 +34,5 @@ schema changes. The named `postgres_data` volume persists across container resta
 that volume deletes the database contents.
 
 The repository does not yet contain a backend database client or connection settings. A
-backend running in Compose should connect to host `db` and port `5432` (not `localhost`);
-a backend running directly on the host should connect to `localhost:5432`.
+backend running in Compose should connect to host `postgres` and port `5432` (not `localhost`);
+a backend running directly on the host should connect to `localhost:15432`.

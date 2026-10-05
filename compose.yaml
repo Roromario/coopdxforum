@@ -1,20 +1,38 @@
 services:
-  db:
-    image: postgres:17-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:?Copy .env.example to .env}
-      POSTGRES_USER: ${POSTGRES_USER:?Copy .env.example to .env}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Copy .env.example to .env}
+  postgres:
+    image: postgres:16
+    container_name: coopdxforum-postgres
     ports:
-      - "127.0.0.1:5432:5432"
+      - "15432:5432"
+    environment:
+      POSTGRES_DB: coopdxforum
+      POSTGRES_USER: Romza
+      POSTGRES_PASSWORD: Romza123
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./backend/database/schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
+      - ./backend/database/schema.sql:/docker-entrypoint-initdb.d/seed.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 10
 
+  adminer:
+    container_name: coopdxforum-adminer
+    image: adminer:latest
+    ports:
+      - "8887:8080"
+    depends_on:
+      - postgres
+
+  chartdb:
+    container_name: coopdxforum-chartdb
+    image: ghcr.io/chartdb/chartdb:latest
+    volumes:
+      - chartdb_data:/data
+    ports:
+      - "8888:80"
+
 volumes:
   postgres_data:
+  chartdb_data:
