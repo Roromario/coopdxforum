@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: coopDXforum
+
+  datasource:
+    # Port 15432 et BDD coopdxforum selon ton compose.yaml
+    url: jdbc:postgresql://localhost:15432/coopdxforum
+    username: Romza
+    password: Romza123
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8080
