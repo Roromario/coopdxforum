@@ -1,4 +1,4 @@
-package com.coopdxforum.coopDXforum.entity;
+package com.coopdxforum.coopDXforum.models.entities;
 
 import jakarta.persistence.*;
 
@@ -11,7 +11,7 @@ public class Invitation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user", nullable = false)
@@ -23,8 +23,8 @@ public class Invitation {
 
     public Invitation() {}
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }

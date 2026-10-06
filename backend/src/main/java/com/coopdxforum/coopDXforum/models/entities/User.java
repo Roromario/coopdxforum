@@ -1,45 +1,48 @@
-package com.coopdxforum.coopDXforum.entities;
+package com.coopdxforum.coopDXforum.models.entities;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "utilisateurs") // ou "users" selon le nom exact dans ton schema.sql
+@Table(name = "\"Users\"")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    private String pseudo;
+    @Column(name = "nickname", nullable = false, unique = true)
     private String nickname;
-    private String avatar;
+
+    @Column(name = "global_name")
+    private String globalName;
+
+    @Column(name = "pp")
+    private String pp;
 
     @Column(name = "last_connection")
     private LocalDateTime lastConnection;
 
-    @Column(name = "address_mail", nullable = false)
-    private String addressMail;
+    @Column(name = "mail_address", nullable = false, unique = true)
+    private String mailAddress;
 
-    // Constructeurs
     public User() {}
 
-    // Getters et Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getPseudo() { return pseudo; }
-    public void setPseudo(String pseudo) { this.pseudo = pseudo; }
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
     public String getNickname() { return nickname; }
     public void setNickname(String nickname) { this.nickname = nickname; }
 
-    public String getAvatar() { return avatar; }
-    public void setAvatar(String avatar) { this.avatar = avatar; }
+    public String getGlobalName() { return globalName; }
+    public void setGlobalName(String globalName) { this.globalName = globalName; }
+
+    public String getPp() { return pp; }
+    public void setPp(String pp) { this.pp = pp; }
 
     public LocalDateTime getLastConnection() { return lastConnection; }
     public void setLastConnection(LocalDateTime lastConnection) { this.lastConnection = lastConnection; }
 
-    public String getAddressMail() { return addressMail; }
-    public void setAddressMail(String addressMail) { this.addressMail = addressMail; }
+    public String getMailAddress() { return mailAddress; }
+    public void setMailAddress(String mailAddress) { this.mailAddress = mailAddress; }
 }

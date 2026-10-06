@@ -1,4 +1,4 @@
-package com.coopdxforum.coopDXforum.entity;
+package com.coopdxforum.coopDXforum.models.entities;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -9,7 +9,7 @@ public class Game {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user_host", nullable = false)
@@ -29,8 +29,8 @@ public class Game {
 
     public Game() {}
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
     public User getHostUser() { return hostUser; }
     public void setHostUser(User hostUser) { this.hostUser = hostUser; }
