@@ -22,6 +22,16 @@ public class EventController {
         return eventRepository.findAll();
     }
 
+    @GetMapping("/user/{userId}")
+    public List<Event> getEventsByUser(@PathVariable Integer userId) {
+        return eventRepository.findByGame_HostUser_Id(userId);
+    }
+
+    @GetMapping("/game-type/{type}")
+    public List<Event> getEventsByGameType(@PathVariable String type) {
+        return eventRepository.findByGame_Type(type);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Event> getEventById(@PathVariable Long id) {
         return eventRepository.findById(id)
