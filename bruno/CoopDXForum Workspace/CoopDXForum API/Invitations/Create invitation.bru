@@ -15,8 +15,10 @@ headers {
 }
 
 body:json {
-  "userId": {{userId}},
-  "eventId": {{eventId}}
+  {
+    "userId": {{userId}},
+    "eventId": {{eventId}}
+  }
 }
 
 script:post-response {

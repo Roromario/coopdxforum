@@ -15,11 +15,13 @@ headers {
 }
 
 body:json {
-  "hostUserId": {{userId}},
-  "type": "Bruno test",
-  "code": "BRUNO-TEST",
-  "dateStartGame": "2026-10-07T18:00:00",
-  "dateEndGame": null
+  {
+    "hostUserId": {{userId}},
+    "type": "Bruno test",
+    "code": "BRUNO-TEST",
+    "dateStartGame": "2026-10-07T18:00:00",
+    "dateEndGame": null
+  }
 }
 
 script:post-response {
