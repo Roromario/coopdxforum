@@ -1,4 +1,4 @@
-# coopdxforum
+﻿# coopdxforum
 
 ## PostgreSQL
 
@@ -48,6 +48,7 @@ or `localhost:15432` when it runs directly on the host.
 
 ## Bruno API collection
 
-The Bruno collection ZIP is [`bruno/CoopDXForum API.zip`](bruno/CoopDXForum%20API.zip).
-Extract it, then open the extracted `CoopDXForum API` folder as a collection in Bruno.
-Select the `local` environment to target `http://localhost:8080`.
+The Bruno workspace ZIP is [`bruno/CoopDXForum API.zip`](bruno/CoopDXForum%20API.zip).
+In Bruno, choose **Workspace > Import Workspace > From ZIP File**, select the ZIP, and
+choose a destination folder. Select the `local` environment to use
+`http://localhost:8080`.

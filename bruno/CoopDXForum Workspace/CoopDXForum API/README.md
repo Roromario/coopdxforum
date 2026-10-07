@@ -2,9 +2,10 @@
 
 ## Import
 
-Extract `CoopDXForum API.zip`, then in Bruno choose **Open Collection** and select the
-extracted `CoopDXForum API` folder. Select the `local` environment to target
-`http://localhost:8080`.
+In Bruno, choose **Workspace > Import Workspace > From ZIP File** and select
+`CoopDXForum API.zip`. Choose a destination folder and import. The ZIP includes
+`workspace.yml` and the collection manifest. Select the `local` environment before sending
+requests; it targets `http://localhost:8080`.
 
 Start PostgreSQL and the Spring Boot backend before sending requests:
 
