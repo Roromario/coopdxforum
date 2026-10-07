@@ -1,11 +1,14 @@
 package com.coopdxforum.coopDXforum.controllers;
 
+import com.coopdxforum.coopDXforum.converters.UserConverter;
+import com.coopdxforum.coopDXforum.models.dto.UserDTO;
 import com.coopdxforum.coopDXforum.models.entities.User;
 import com.coopdxforum.coopDXforum.repositories.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -19,27 +22,36 @@ public class UserController {
 
     // GET ALL : SELECT * FROM "Users"
     @GetMapping
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(UserConverter::toDTO)
+                .collect(Collectors.toList());
     }
 
     // GET BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         return userRepository.findById(id)
+                .map(UserConverter::toDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     // POST : INSERT
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
+    public UserDTO createUser(@RequestBody UserDTO userDTO) {
+        User user = new User();
+        user.setNickname(userDTO.getNickname());
+        user.setGlobalName(userDTO.getGlobalName());
+        user.setPp(userDTO.getPp());
+        user.setLastConnection(userDTO.getLastConnection());
+        user.setMailAddress(userDTO.getMailAddress());
+        return UserConverter.toDTO(userRepository.save(user));
     }
 
     // PUT : UPDATE
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDetails) {
         return userRepository.findById(id)
                 .map(user -> {
                     user.setNickname(userDetails.getNickname());
@@ -47,7 +59,7 @@ public class UserController {
                     user.setPp(userDetails.getPp());
                     user.setLastConnection(userDetails.getLastConnection());
                     user.setMailAddress(userDetails.getMailAddress());
-                    return ResponseEntity.ok(userRepository.save(user));
+                    return ResponseEntity.ok(UserConverter.toDTO(userRepository.save(user)));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
