@@ -1,0 +1,528 @@
+openapi: 3.0.3
+info:
+  title: CoopDXForum API
+  version: 1.0.0
+  description: >
+    API locale CoopDXForum. Importer ce fichier OpenAPI dans Bruno pour générer
+    les requêtes de test. Pour créer des données liées, créer d'abord un
+    utilisateur, puis un jeu, un événement et enfin une invitation.
+servers:
+  - url: http://localhost:8080
+    description: Backend local
+tags:
+  - name: Users
+  - name: Games
+  - name: Events
+  - name: Invitations
+paths:
+  /api/users:
+    get:
+      tags: [Users]
+      summary: Lister les utilisateurs
+      operationId: listUsers
+      responses:
+        "200":
+          description: Liste des utilisateurs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserDTO"
+    post:
+      tags: [Users]
+      summary: Créer un utilisateur
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+            example:
+              nickname: bruno-user
+              globalName: Utilisateur Bruno
+              pp: https://example.com/avatar.png
+              lastConnection: "2026-10-07T18:00:00"
+              mailAddress: bruno-user@example.com
+      responses:
+        "200":
+          description: Utilisateur créé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDTO"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /api/users/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Users]
+      summary: Obtenir un utilisateur
+      operationId: getUser
+      responses:
+        "200":
+          description: Utilisateur trouvé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDTO"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags: [Users]
+      summary: Modifier un utilisateur
+      operationId: updateUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+            example:
+              nickname: bruno-user-updated
+              globalName: Utilisateur Bruno modifié
+              pp: https://example.com/avatar-updated.png
+              lastConnection: "2026-10-07T18:05:00"
+              mailAddress: bruno-user-updated@example.com
+      responses:
+        "200":
+          description: Utilisateur modifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDTO"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      tags: [Users]
+      summary: Supprimer un utilisateur
+      operationId: deleteUser
+      responses:
+        "204":
+          description: Utilisateur supprimé
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/games:
+    get:
+      tags: [Games]
+      summary: Lister les jeux
+      operationId: listGames
+      responses:
+        "200":
+          description: Liste des jeux
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GameDTO"
+    post:
+      tags: [Games]
+      summary: Créer un jeu
+      operationId: createGame
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GameInput"
+            example:
+              hostUserId: 1
+              type: CoopDXForum
+              code: BRUNO-TEST
+              dateStartGame: "2026-10-07T18:00:00"
+              dateEndGame: null
+      responses:
+        "200":
+          description: Jeu créé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameDTO"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          description: Utilisateur hôte introuvable
+  /api/games/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Games]
+      summary: Obtenir un jeu
+      operationId: getGame
+      responses:
+        "200":
+          description: Jeu trouvé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameDTO"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags: [Games]
+      summary: Modifier un jeu
+      operationId: updateGame
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GameInput"
+            example:
+              hostUserId: 1
+              type: CoopDXForum modifié
+              code: BRUNO-UPDATED
+              dateStartGame: "2026-10-07T18:00:00"
+              dateEndGame: "2026-10-07T19:00:00"
+      responses:
+        "200":
+          description: Jeu modifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameDTO"
+        "404":
+          description: Jeu ou utilisateur hôte introuvable
+    delete:
+      tags: [Games]
+      summary: Supprimer un jeu
+      operationId: deleteGame
+      responses:
+        "204":
+          description: Jeu supprimé
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/events:
+    get:
+      tags: [Events]
+      summary: Lister les événements
+      operationId: listEvents
+      responses:
+        "200":
+          description: Liste des événements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EventDTO"
+    post:
+      tags: [Events]
+      summary: Créer un événement
+      operationId: createEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventInput"
+            example:
+              gameId: 1
+              description: Événement de test Bruno
+              status: 1
+              createdAt: "2026-10-07T18:00:00"
+      responses:
+        "200":
+          description: Événement créé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventDTO"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          description: Jeu introuvable
+  /api/events/user/{userId}:
+    get:
+      tags: [Events]
+      summary: Lister les événements organisés par un utilisateur
+      operationId: listEventsByUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Liste des événements de l'utilisateur
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EventDTO"
+  /api/events/game-type/{type}:
+    get:
+      tags: [Events]
+      summary: Lister les événements par type de jeu
+      operationId: listEventsByGameType
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+          example: CoopDXForum
+      responses:
+        "200":
+          description: Liste des événements pour ce type de jeu
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EventDTO"
+  /api/events/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Events]
+      summary: Obtenir un événement
+      operationId: getEvent
+      responses:
+        "200":
+          description: Événement trouvé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventDTO"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags: [Events]
+      summary: Modifier un événement
+      operationId: updateEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventInput"
+            example:
+              gameId: 1
+              description: Événement de test Bruno modifié
+              status: 2
+              createdAt: "2026-10-07T18:05:00"
+      responses:
+        "200":
+          description: Événement modifié
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventDTO"
+        "404":
+          description: Événement ou jeu introuvable
+    delete:
+      tags: [Events]
+      summary: Supprimer un événement
+      operationId: deleteEvent
+      responses:
+        "204":
+          description: Événement supprimé
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/invitations:
+    get:
+      tags: [Invitations]
+      summary: Lister les invitations
+      operationId: listInvitations
+      responses:
+        "200":
+          description: Liste des invitations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InvitationDTO"
+    post:
+      tags: [Invitations]
+      summary: Créer une invitation
+      operationId: createInvitation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InvitationInput"
+            example:
+              userId: 1
+              eventId: 1
+      responses:
+        "200":
+          description: Invitation créée
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvitationDTO"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          description: Utilisateur ou événement introuvable
+  /api/invitations/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Invitations]
+      summary: Obtenir une invitation
+      operationId: getInvitation
+      responses:
+        "200":
+          description: Invitation trouvée
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvitationDTO"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags: [Invitations]
+      summary: Modifier une invitation
+      operationId: updateInvitation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InvitationInput"
+            example:
+              userId: 1
+              eventId: 1
+      responses:
+        "200":
+          description: Invitation modifiée
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvitationDTO"
+        "404":
+          description: Invitation, utilisateur ou événement introuvable
+    delete:
+      tags: [Invitations]
+      summary: Supprimer une invitation
+      operationId: deleteInvitation
+      responses:
+        "204":
+          description: Invitation supprimée
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int32
+  responses:
+    BadRequest:
+      description: Requête invalide ou identifiant de relation manquant
+    NotFound:
+      description: Ressource introuvable
+  schemas:
+    UserInput:
+      type: object
+      required: [nickname, mailAddress]
+      properties:
+        nickname:
+          type: string
+        globalName:
+          type: string
+          nullable: true
+        pp:
+          type: string
+          nullable: true
+        lastConnection:
+          type: string
+          format: date-time
+          nullable: true
+        mailAddress:
+          type: string
+          format: email
+    UserDTO:
+      allOf:
+        - $ref: "#/components/schemas/UserInput"
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+    GameInput:
+      type: object
+      required: [hostUserId, type, dateStartGame]
+      properties:
+        hostUserId:
+          type: integer
+          format: int32
+        type:
+          type: string
+        code:
+          type: string
+          nullable: true
+        dateStartGame:
+          type: string
+          format: date-time
+        dateEndGame:
+          type: string
+          format: date-time
+          nullable: true
+    GameDTO:
+      allOf:
+        - $ref: "#/components/schemas/GameInput"
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+    EventInput:
+      type: object
+      required: [gameId, status, createdAt]
+      properties:
+        gameId:
+          type: integer
+          format: int32
+        description:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+        createdAt:
+          type: string
+          format: date-time
+    EventDTO:
+      allOf:
+        - $ref: "#/components/schemas/EventInput"
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+    InvitationInput:
+      type: object
+      required: [userId, eventId]
+      properties:
+        userId:
+          type: integer
+          format: int32
+        eventId:
+          type: integer
+          format: int32
+    InvitationDTO:
+      allOf:
+        - $ref: "#/components/schemas/InvitationInput"
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int32

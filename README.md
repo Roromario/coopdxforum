@@ -45,3 +45,8 @@ cd .\backend
 
 Use `postgres:5432` as the database host/port when the backend runs in the same Compose network,
 or `localhost:15432` when it runs directly on the host.
+
+## Bruno API collection
+
+The OpenAPI collection is in [`bruno/coopdxforum-openapi.yaml`](bruno/coopdxforum-openapi.yaml).
+Import this YAML file into Bruno to generate the requests for the API at `http://localhost:8080`.
