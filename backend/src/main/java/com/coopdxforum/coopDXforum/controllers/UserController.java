@@ -30,7 +30,7 @@ public class UserController {
 
     // GET BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Integer id) {
         return userRepository.findById(id)
                 .map(UserConverter::toDTO)
                 .map(ResponseEntity::ok)
@@ -51,7 +51,7 @@ public class UserController {
 
     // PUT : UPDATE
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDetails) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Integer id, @RequestBody UserDTO userDetails) {
         return userRepository.findById(id)
                 .map(user -> {
                     user.setNickname(userDetails.getNickname());
@@ -66,7 +66,7 @@ public class UserController {
 
     // DELETE : REMOVE
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
             return ResponseEntity.noContent().build();

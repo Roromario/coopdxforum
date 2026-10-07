@@ -34,7 +34,7 @@ public class GameController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GameDTO> getGameById(@PathVariable Long id) {
+    public ResponseEntity<GameDTO> getGameById(@PathVariable Integer id) {
         return gameRepository.findById(id)
                 .map(GameConverter::toDTO)
                 .map(ResponseEntity::ok)
@@ -53,7 +53,7 @@ public class GameController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GameDTO> updateGame(@PathVariable Long id, @RequestBody GameDTO gameDetails) {
+    public ResponseEntity<GameDTO> updateGame(@PathVariable Integer id, @RequestBody GameDTO gameDetails) {
         return gameRepository.findById(id)
                 .map(game -> {
                     game.setHostUser(findHostUser(gameDetails.getHostUserId()));
@@ -70,12 +70,12 @@ public class GameController {
         if (userId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "hostUserId is required");
         }
-        return userRepository.findById(userId.longValue())
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Host user not found"));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGame(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteGame(@PathVariable Integer id) {
         if (gameRepository.existsById(id)) {
             gameRepository.deleteById(id);
             return ResponseEntity.noContent().build();

@@ -41,7 +41,7 @@ public class InvitationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InvitationDTO> getInvitationById(@PathVariable Long id) {
+    public ResponseEntity<InvitationDTO> getInvitationById(@PathVariable Integer id) {
         return invitationRepository.findById(id)
                 .map(InvitationConverter::toDTO)
                 .map(ResponseEntity::ok)
@@ -58,7 +58,7 @@ public class InvitationController {
 
     @PutMapping("/{id}")
     public ResponseEntity<InvitationDTO> updateInvitation(
-            @PathVariable Long id, @RequestBody InvitationDTO invitationDetails) {
+            @PathVariable Integer id, @RequestBody InvitationDTO invitationDetails) {
         return invitationRepository.findById(id)
                 .map(invitation -> {
                     invitation.setUser(findUser(invitationDetails.getUserId()));
@@ -72,7 +72,7 @@ public class InvitationController {
         if (userId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "userId is required");
         }
-        return userRepository.findById(userId.longValue())
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
@@ -80,12 +80,12 @@ public class InvitationController {
         if (eventId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "eventId is required");
         }
-        return eventRepository.findById(eventId.longValue())
+        return eventRepository.findById(eventId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteInvitation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteInvitation(@PathVariable Integer id) {
         if (invitationRepository.existsById(id)) {
             invitationRepository.deleteById(id);
             return ResponseEntity.noContent().build();

@@ -48,7 +48,7 @@ public class EventController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EventDTO> getEventById(@PathVariable Long id) {
+    public ResponseEntity<EventDTO> getEventById(@PathVariable Integer id) {
         return eventRepository.findById(id)
                 .map(EventConverter::toDTO)
                 .map(ResponseEntity::ok)
@@ -66,7 +66,7 @@ public class EventController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EventDTO> updateEvent(@PathVariable Long id, @RequestBody EventDTO eventDetails) {
+    public ResponseEntity<EventDTO> updateEvent(@PathVariable Integer id, @RequestBody EventDTO eventDetails) {
         return eventRepository.findById(id)
                 .map(event -> {
                     event.setGame(findGame(eventDetails.getGameId()));
@@ -82,12 +82,12 @@ public class EventController {
         if (gameId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "gameId is required");
         }
-        return gameRepository.findById(gameId.longValue())
+        return gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteEvent(@PathVariable Integer id) {
         if (eventRepository.existsById(id)) {
             eventRepository.deleteById(id);
             return ResponseEntity.noContent().build();
