@@ -1,0 +1,11 @@
+meta {
+  name: Delete invitation
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/api/invitations/{{invitationId}}
+  body: none
+  auth: none
+}

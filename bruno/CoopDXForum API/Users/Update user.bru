@@ -1,0 +1,23 @@
+meta {
+  name: Update user
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/users/{{userId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  "nickname": "bruno-updated-{{runTag}}",
+  "globalName": "Bruno test updated",
+  "pp": "https://example.com/avatar-updated.png",
+  "lastConnection": "2026-10-07T18:05:00",
+  "mailAddress": "bruno-updated-{{runTag}}@example.com"
+}

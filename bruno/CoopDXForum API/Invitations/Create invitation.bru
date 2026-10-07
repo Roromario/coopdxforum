@@ -1,0 +1,24 @@
+meta {
+  name: Create invitation
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/invitations
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  "userId": {{userId}},
+  "eventId": {{eventId}}
+}
+
+script:post-response {
+  bru.setVar("invitationId", res.body.id);
+}

@@ -48,5 +48,6 @@ or `localhost:15432` when it runs directly on the host.
 
 ## Bruno API collection
 
-The OpenAPI collection is in [`bruno/coopdxforum-openapi.yaml`](bruno/coopdxforum-openapi.yaml).
-Import this YAML file into Bruno to generate the requests for the API at `http://localhost:8080`.
+The Bruno collection ZIP is [`bruno/CoopDXForum API.zip`](bruno/CoopDXForum%20API.zip).
+Extract it, then open the extracted `CoopDXForum API` folder as a collection in Bruno.
+Select the `local` environment to target `http://localhost:8080`.

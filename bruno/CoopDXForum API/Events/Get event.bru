@@ -1,0 +1,11 @@
+meta {
+  name: Get event
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/events/{{eventId}}
+  body: none
+  auth: none
+}

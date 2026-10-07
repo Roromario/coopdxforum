@@ -1,0 +1,26 @@
+meta {
+  name: Create event
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/events
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  "gameId": {{gameId}},
+  "description": "Bruno API test event",
+  "status": 1,
+  "createdAt": "2026-10-07T18:00:00"
+}
+
+script:post-response {
+  bru.setVar("eventId", res.body.id);
+}

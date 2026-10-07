@@ -1,0 +1,23 @@
+meta {
+  name: Update game
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/games/{{gameId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  "hostUserId": {{userId}},
+  "type": "Bruno test updated",
+  "code": "BRUNO-UPDATED",
+  "dateStartGame": "2026-10-07T18:00:00",
+  "dateEndGame": "2026-10-07T19:00:00"
+}

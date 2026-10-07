@@ -1,0 +1,27 @@
+meta {
+  name: Create game
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/games
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  "hostUserId": {{userId}},
+  "type": "Bruno test",
+  "code": "BRUNO-TEST",
+  "dateStartGame": "2026-10-07T18:00:00",
+  "dateEndGame": null
+}
+
+script:post-response {
+  bru.setVar("gameId", res.body.id);
+}

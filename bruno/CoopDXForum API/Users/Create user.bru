@@ -1,0 +1,31 @@
+meta {
+  name: Create user
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/users
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  "nickname": "bruno-{{runTag}}",
+  "globalName": "Bruno test",
+  "pp": "https://example.com/avatar.png",
+  "lastConnection": "2026-10-07T18:00:00",
+  "mailAddress": "bruno-{{runTag}}@example.com"
+}
+
+script:pre-request {
+  bru.setVar("runTag", Date.now().toString());
+}
+
+script:post-response {
+  bru.setVar("userId", res.body.id);
+}
