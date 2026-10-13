@@ -1,0 +1,11 @@
+meta {
+  name: My games as invited user
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/api/games/user/{{participantUserId}}
+  body: none
+  auth: none
+}

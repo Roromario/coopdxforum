@@ -1,6 +1,7 @@
 package com.coopdxforum.coopDXforum.controllers;
 
 import com.coopdxforum.coopDXforum.models.dto.GameDTO;
+import com.coopdxforum.coopDXforum.models.dto.UserGameDTO;
 import com.coopdxforum.coopDXforum.service.GameService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,13 @@ public class GameController {
     }
 
     @GetMapping("/user/{userId}")
-    public List<GameDTO> getGamesByUser(@PathVariable Integer userId) {
+    public List<UserGameDTO> getGamesByUser(@PathVariable Integer userId) {
         return gameService.getGamesByUser(userId);
+    }
+
+    @GetMapping("/{id}/code")
+    public ResponseEntity<String> getGameCode(@PathVariable Integer id) {
+        return ResponseEntity.ok(gameService.getGameCode(id));
     }
 
     @GetMapping("/user/{userId}/participating")

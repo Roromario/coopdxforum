@@ -12,6 +12,7 @@ public final class InvitationConverter {
         dto.setId(invitation.getId());
         dto.setUserId(invitation.getUser() == null ? null : invitation.getUser().getId());
         dto.setEventId(invitation.getEvent() == null ? null : invitation.getEvent().getId());
+        dto.setJoined(invitation.isJoined());
         return dto;
     }
 }

@@ -21,6 +21,9 @@ public class Invitation {
     @JoinColumn(name = "id_event", nullable = false)
     private Event event;
 
+    @Column(name = "joined", nullable = false)
+    private boolean joined;
+
     public Invitation() {}
 
     public Integer getId() { return id; }
@@ -31,4 +34,7 @@ public class Invitation {
 
     public Event getEvent() { return event; }
     public void setEvent(Event event) { this.event = event; }
+
+    public boolean isJoined() { return joined; }
+    public void setJoined(boolean joined) { this.joined = joined; }
 }

@@ -29,8 +29,10 @@ Table names are case-sensitive because the schema uses quoted names.
 
 The schema initialization script only runs when PostgreSQL creates a new, empty data volume.
 Editing `schema.sql` later will not update an existing database; use migrations for subsequent
-schema changes. The named `postgres_data` volume persists across container restarts. Removing
-that volume deletes the database contents.
+schema changes. For an existing database, apply
+[`backend/database/migrations/001_add_invitation_joined.sql`](backend/database/migrations/001_add_invitation_joined.sql)
+before using the invitation presence endpoint. The named `postgres_data` volume persists across
+container restarts. Removing that volume deletes the database contents.
 
 ## Spring Boot backend
 

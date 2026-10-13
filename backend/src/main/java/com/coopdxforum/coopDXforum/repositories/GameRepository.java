@@ -10,6 +10,9 @@ import java.util.List;
 
 public interface GameRepository extends JpaRepository<Game, Integer> {
 
+    @Query("SELECT game.code FROM Game game WHERE game.id = :gameId")
+    String findCodeById(@Param("gameId") Integer gameId);
+
     @Query("""
             SELECT game
             FROM Game game

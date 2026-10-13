@@ -1,0 +1,11 @@
+meta {
+  name: Delete invited user
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{baseUrl}}/api/users/{{participantUserId}}
+  body: none
+  auth: none
+}

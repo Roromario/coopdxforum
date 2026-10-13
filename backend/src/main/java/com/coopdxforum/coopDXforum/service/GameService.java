@@ -2,9 +2,12 @@ package com.coopdxforum.coopDXforum.service;
 
 import com.coopdxforum.coopDXforum.converters.GameConverter;
 import com.coopdxforum.coopDXforum.models.dto.GameDTO;
+import com.coopdxforum.coopDXforum.models.dto.UserGameDTO;
 import com.coopdxforum.coopDXforum.models.entities.Game;
+import com.coopdxforum.coopDXforum.models.entities.Invitation;
 import com.coopdxforum.coopDXforum.models.entities.User;
 import com.coopdxforum.coopDXforum.repositories.GameRepository;
+import com.coopdxforum.coopDXforum.repositories.InvitationRepository;
 import com.coopdxforum.coopDXforum.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,10 +24,15 @@ import java.util.stream.Collectors;
 public class GameService {
 
     private final GameRepository gameRepository;
+    private final InvitationRepository invitationRepository;
     private final UserRepository userRepository;
 
-    public GameService(GameRepository gameRepository, UserRepository userRepository) {
+    public GameService(
+            GameRepository gameRepository,
+            InvitationRepository invitationRepository,
+            UserRepository userRepository) {
         this.gameRepository = gameRepository;
+        this.invitationRepository = invitationRepository;
         this.userRepository = userRepository;
     }
 
@@ -39,9 +48,39 @@ public class GameService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
     }
 
-    public List<GameDTO> getGamesByUser(Integer userId) {
-        return gameRepository.findAllGamesByUserId(userId).stream()
-                .map(GameConverter::toDTO)
+    public String getGameCode(Integer id) {
+        String code = gameRepository.findCodeById(id);
+        if (code == null && !gameRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found");
+        }
+        return code;
+    }
+
+    public List<UserGameDTO> getGamesByUser(Integer userId) {
+        List<Game> games = gameRepository.findAllGamesByUserId(userId);
+        if (games.isEmpty()) {
+            return List.of();
+        }
+
+        Map<Integer, Boolean> joinedByGameId = invitationRepository
+                .findByUser_IdAndEvent_Game_IdIn(
+                        userId,
+                        games.stream().map(Game::getId).collect(Collectors.toList()))
+                .stream()
+                .collect(Collectors.toMap(
+                        invitation -> invitation.getEvent().getGame().getId(),
+                        Invitation::isJoined,
+                        Boolean::logicalOr));
+
+        return games.stream()
+                .map(game -> {
+                    UserGameDTO dto = new UserGameDTO();
+                    dto.setGame(GameConverter.toDTO(game));
+                    dto.setJoined(
+                            game.getHostUser().getId().equals(userId)
+                                    || joinedByGameId.getOrDefault(game.getId(), false));
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 

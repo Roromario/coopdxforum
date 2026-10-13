@@ -17,11 +17,15 @@ cd .\backend
 
 ## Suggested test order
 
-1. Create a user; its response stores `userId`.
-2. Create a game; it uses `userId` and stores `gameId`.
-3. Create an event; it uses `gameId` and stores `eventId`.
-4. Create an invitation; it uses `userId` and `eventId`, and stores `invitationId`.
-5. Run the related Get, List, and Update requests.
-6. Delete test data in reverse dependency order: invitation, event, game, user.
+1. Create a host user; its response stores `userId`.
+2. Create an invited user; its response stores `participantUserId`.
+3. Create a game hosted by `userId`; the response stores `gameId`.
+4. Create an event using `gameId`; the response stores `eventId`.
+5. Create an invitation for `participantUserId` and `eventId`; the response stores `invitationId`.
+6. Run **My games as invited user** to check `joined: false`.
+7. Run **Mark invitation as joined**, then rerun **My games as invited user** and
+   **Get invitation** to check `joined: true`.
+8. Run **Get game code** to check the game-code route.
+9. Delete test data in reverse dependency order: invitation, event, game, invited user, host user.
 
 The create requests save returned IDs as Bruno runtime variables for subsequent requests.

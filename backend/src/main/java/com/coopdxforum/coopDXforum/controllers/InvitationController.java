@@ -1,6 +1,7 @@
 package com.coopdxforum.coopDXforum.controllers;
 
 import com.coopdxforum.coopDXforum.converters.InvitationConverter;
+import com.coopdxforum.coopDXforum.models.dto.JoinedStatusDTO;
 import com.coopdxforum.coopDXforum.models.dto.InvitationDTO;
 import com.coopdxforum.coopDXforum.models.entities.Event;
 import com.coopdxforum.coopDXforum.models.entities.Invitation;
@@ -61,11 +62,30 @@ public class InvitationController {
             @PathVariable Integer id, @RequestBody InvitationDTO invitationDetails) {
         return invitationRepository.findById(id)
                 .map(invitation -> {
-                    invitation.setUser(findUser(invitationDetails.getUserId()));
-                    invitation.setEvent(findEvent(invitationDetails.getEventId()));
+                    User user = findUser(invitationDetails.getUserId());
+                    Event event = findEvent(invitationDetails.getEventId());
+                    if (!invitation.getUser().getId().equals(user.getId())
+                            || !invitation.getEvent().getId().equals(event.getId())) {
+                        invitation.setJoined(false);
+                    }
+                    invitation.setUser(user);
+                    invitation.setEvent(event);
                     return ResponseEntity.ok(InvitationConverter.toDTO(invitationRepository.save(invitation)));
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invitation not found"));
+    }
+
+    @PutMapping("/{id}/joined")
+    public ResponseEntity<InvitationDTO> updateJoinedStatus(
+            @PathVariable Integer id, @RequestBody JoinedStatusDTO update) {
+        if (update == null || update.getJoined() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "joined is required");
+        }
+
+        Invitation invitation = invitationRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invitation not found"));
+        invitation.setJoined(update.getJoined());
+        return ResponseEntity.ok(InvitationConverter.toDTO(invitationRepository.save(invitation)));
     }
 
     private User findUser(Integer userId) {

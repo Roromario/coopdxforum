@@ -1,0 +1,29 @@
+meta {
+  name: Create invited user
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/users
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nickname": "bruno-invited-{{runTag}}",
+    "globalName": "Bruno invited player",
+    "pp": "https://example.com/avatar.png",
+    "lastConnection": "2026-10-07T18:00:00",
+    "mailAddress": "bruno-invited-{{runTag}}@example.com"
+  }
+}
+
+script:post-response {
+  bru.setVar("participantUserId", res.body.id);
+}

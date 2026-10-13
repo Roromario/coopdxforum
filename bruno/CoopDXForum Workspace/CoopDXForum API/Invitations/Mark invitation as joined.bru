@@ -1,0 +1,21 @@
+meta {
+  name: Mark invitation as joined
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/api/invitations/{{invitationId}}/joined
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "joined": true
+  }
+}

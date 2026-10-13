@@ -5,6 +5,7 @@ public class InvitationDTO {
     private Integer id;
     private Integer userId;
     private Integer eventId;
+    private boolean joined;
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
@@ -14,4 +15,7 @@ public class InvitationDTO {
 
     public Integer getEventId() { return eventId; }
     public void setEventId(Integer eventId) { this.eventId = eventId; }
+
+    public boolean isJoined() { return joined; }
+    public void setJoined(boolean joined) { this.joined = joined; }
 }
