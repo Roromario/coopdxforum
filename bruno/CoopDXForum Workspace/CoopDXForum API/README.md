@@ -22,10 +22,11 @@ cd .\backend
 3. Create a game hosted by `userId`; the response stores `gameId`.
 4. Create an event using `gameId`; the response stores `eventId`.
 5. Create an invitation for `participantUserId` and `eventId`; the response stores `invitationId`.
-6. Run **My games as invited user** to check `joined: false`.
-7. Run **Mark invitation as joined**, then rerun **My games as invited user** and
+6. Run **List upcoming invitations by user** to check the invited player can find upcoming games.
+7. Run **My games as invited user** to check `joined: false`.
+8. Run **Mark invitation as joined**, then rerun **My games as invited user** and
    **Get invitation** to check `joined: true`.
-8. Run **Get game code** to check the game-code route.
-9. Delete test data in reverse dependency order: invitation, event, game, invited user, host user.
+9. Run **Get game code** to check the game-code route.
+10. Delete test data in reverse dependency order: invitation, event, game, invited user, host user.
 
 The create requests save returned IDs as Bruno runtime variables for subsequent requests.

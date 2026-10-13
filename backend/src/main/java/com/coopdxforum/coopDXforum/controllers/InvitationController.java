@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,14 @@ public class InvitationController {
     @GetMapping
     public List<InvitationDTO> getAllInvitations() {
         return invitationRepository.findAll().stream()
+                .map(InvitationConverter::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/user/{userId}/upcoming")
+    public List<InvitationDTO> getUpcomingInvitationsForUser(@PathVariable Integer userId) {
+        return invitationRepository
+                .findByUser_IdAndEvent_Game_DateStartGameAfter(userId, LocalDateTime.now()).stream()
                 .map(InvitationConverter::toDTO)
                 .collect(Collectors.toList());
     }

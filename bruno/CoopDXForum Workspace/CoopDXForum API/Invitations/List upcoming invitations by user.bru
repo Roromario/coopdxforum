@@ -1,0 +1,11 @@
+meta {
+  name: List upcoming invitations by user
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/invitations/user/{{participantUserId}}/upcoming
+  body: none
+  auth: none
+}
