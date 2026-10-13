@@ -1,85 +1,60 @@
 package com.coopdxforum.coopDXforum.controllers;
 
-import com.coopdxforum.coopDXforum.converters.GameConverter;
 import com.coopdxforum.coopDXforum.models.dto.GameDTO;
-import com.coopdxforum.coopDXforum.models.entities.Game;
-import com.coopdxforum.coopDXforum.models.entities.User;
-import com.coopdxforum.coopDXforum.repositories.GameRepository;
-import com.coopdxforum.coopDXforum.repositories.UserRepository;
-import org.springframework.http.HttpStatus;
+import com.coopdxforum.coopDXforum.service.GameService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/games")
 public class GameController {
 
-    private final GameRepository gameRepository;
-    private final UserRepository userRepository;
+    private final GameService gameService;
 
-    public GameController(GameRepository gameRepository, UserRepository userRepository) {
-        this.gameRepository = gameRepository;
-        this.userRepository = userRepository;
+    public GameController(GameService gameService) {
+        this.gameService = gameService;
     }
 
     @GetMapping
     public List<GameDTO> getAllGames() {
-        return gameRepository.findAll().stream()
-                .map(GameConverter::toDTO)
-                .collect(Collectors.toList());
+        return gameService.getAllGames();
+    }
+
+    @GetMapping("/user/{userId}")
+    public List<GameDTO> getGamesByUser(@PathVariable Integer userId) {
+        return gameService.getGamesByUser(userId);
+    }
+
+    @GetMapping("/user/{userId}/participating")
+    public List<GameDTO> getParticipatingGames(@PathVariable Integer userId) {
+        return gameService.getParticipatingGames(userId);
+    }
+
+    @GetMapping("/user/{userId}/participated")
+    public List<GameDTO> getPreviouslyParticipatedGames(@PathVariable Integer userId) {
+        return gameService.getPreviouslyParticipatedGames(userId);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<GameDTO> getGameById(@PathVariable Integer id) {
-        return gameRepository.findById(id)
-                .map(GameConverter::toDTO)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
+        return ResponseEntity.ok(gameService.getGameById(id));
     }
 
     @PostMapping
     public GameDTO createGame(@RequestBody GameDTO gameDTO) {
-        Game game = new Game();
-        game.setHostUser(findHostUser(gameDTO.getHostUserId()));
-        game.setType(gameDTO.getType());
-        game.setCode(gameDTO.getCode());
-        game.setDateStartGame(gameDTO.getDateStartGame());
-        game.setDateEndGame(gameDTO.getDateEndGame());
-        return GameConverter.toDTO(gameRepository.save(game));
+        return gameService.createGame(gameDTO);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<GameDTO> updateGame(@PathVariable Integer id, @RequestBody GameDTO gameDetails) {
-        return gameRepository.findById(id)
-                .map(game -> {
-                    game.setHostUser(findHostUser(gameDetails.getHostUserId()));
-                    game.setType(gameDetails.getType());
-                    game.setCode(gameDetails.getCode());
-                    game.setDateStartGame(gameDetails.getDateStartGame());
-                    game.setDateEndGame(gameDetails.getDateEndGame());
-                    return ResponseEntity.ok(GameConverter.toDTO(gameRepository.save(game)));
-                })
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
-    }
-
-    private User findHostUser(Integer userId) {
-        if (userId == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "hostUserId is required");
-        }
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Host user not found"));
+        return ResponseEntity.ok(gameService.updateGame(id, gameDetails));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGame(@PathVariable Integer id) {
-        if (!gameRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found");
-        }
-        gameRepository.deleteById(id);
+        gameService.deleteGame(id);
         return ResponseEntity.noContent().build();
     }
 }

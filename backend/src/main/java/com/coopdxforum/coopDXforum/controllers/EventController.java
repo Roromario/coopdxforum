@@ -1,97 +1,55 @@
 package com.coopdxforum.coopDXforum.controllers;
 
-import com.coopdxforum.coopDXforum.converters.EventConverter;
 import com.coopdxforum.coopDXforum.models.dto.EventDTO;
-import com.coopdxforum.coopDXforum.models.entities.Event;
-import com.coopdxforum.coopDXforum.models.entities.Game;
-import com.coopdxforum.coopDXforum.repositories.EventRepository;
-import com.coopdxforum.coopDXforum.repositories.GameRepository;
-import org.springframework.http.HttpStatus;
+import com.coopdxforum.coopDXforum.service.EventService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/events")
 public class EventController {
 
-    private final EventRepository eventRepository;
-    private final GameRepository gameRepository;
+    private final EventService eventService;
 
-    public EventController(EventRepository eventRepository, GameRepository gameRepository) {
-        this.eventRepository = eventRepository;
-        this.gameRepository = gameRepository;
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
     }
 
     @GetMapping
     public List<EventDTO> getAllEvents() {
-        return eventRepository.findAll().stream()
-                .map(EventConverter::toDTO)
-                .collect(Collectors.toList());
+        return eventService.getAllEvents();
     }
 
     @GetMapping("/user/{userId}")
     public List<EventDTO> getEventsByUser(@PathVariable Integer userId) {
-        return eventRepository.findByGame_HostUser_Id(userId).stream()
-                .map(EventConverter::toDTO)
-                .collect(Collectors.toList());
+        return eventService.getEventsByUser(userId);
     }
 
     @GetMapping("/game-type/{type}")
     public List<EventDTO> getEventsByGameType(@PathVariable String type) {
-        return eventRepository.findByGame_Type(type).stream()
-                .map(EventConverter::toDTO)
-                .collect(Collectors.toList());
+        return eventService.getEventsByGameType(type);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EventDTO> getEventById(@PathVariable Integer id) {
-        return eventRepository.findById(id)
-                .map(EventConverter::toDTO)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+        return ResponseEntity.ok(eventService.getEventById(id));
     }
 
     @PostMapping
     public EventDTO createEvent(@RequestBody EventDTO eventDTO) {
-        Event event = new Event();
-        event.setGame(findGame(eventDTO.getGameId()));
-        event.setDescription(eventDTO.getDescription());
-        event.setStatus(eventDTO.getStatus());
-        event.setCreatedAt(eventDTO.getCreatedAt());
-        return EventConverter.toDTO(eventRepository.save(event));
+        return eventService.createEvent(eventDTO);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<EventDTO> updateEvent(@PathVariable Integer id, @RequestBody EventDTO eventDetails) {
-        return eventRepository.findById(id)
-                .map(event -> {
-                    event.setGame(findGame(eventDetails.getGameId()));
-                    event.setDescription(eventDetails.getDescription());
-                    event.setStatus(eventDetails.getStatus());
-                    event.setCreatedAt(eventDetails.getCreatedAt());
-                    return ResponseEntity.ok(EventConverter.toDTO(eventRepository.save(event)));
-                })
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
-    }
-
-    private Game findGame(Integer gameId) {
-        if (gameId == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "gameId is required");
-        }
-        return gameRepository.findById(gameId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
+        return ResponseEntity.ok(eventService.updateEvent(id, eventDetails));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable Integer id) {
-        if (!eventRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
-        }
-        eventRepository.deleteById(id);
+        eventService.deleteEvent(id);
         return ResponseEntity.noContent().build();
     }
 }
