@@ -1,0 +1,25 @@
+meta {
+  name: End game
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/api/games/{{gameId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "hostUserId": {{userId}},
+    "type": "Bruno test ended",
+    "code": "BRUNO-ENDED",
+    "dateStartGame": "2000-10-07T18:00:00",
+    "dateEndGame": "2001-10-07T19:00:00"
+  }
+}

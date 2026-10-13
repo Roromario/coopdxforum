@@ -91,8 +91,20 @@ public class InvitationController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "joined is required");
         }
 
-        Invitation invitation = invitationRepository.findById(id)
+        Invitation invitation = invitationRepository.findByIdWithEventAndGame(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invitation not found"));
+        if (update.getJoined()) {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime gameStart = invitation.getEvent().getGame().getDateStartGame();
+            LocalDateTime gameEnd = invitation.getEvent().getGame().getDateEndGame();
+
+            if (now.isBefore(gameStart)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Game has not started yet");
+            }
+            if (gameEnd != null && !now.isBefore(gameEnd)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Game has already ended");
+            }
+        }
         invitation.setJoined(update.getJoined());
         return ResponseEntity.ok(InvitationConverter.toDTO(invitationRepository.save(invitation)));
     }

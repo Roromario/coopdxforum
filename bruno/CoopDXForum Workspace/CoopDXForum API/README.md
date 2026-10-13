@@ -24,9 +24,12 @@ cd .\backend
 5. Create an invitation for `participantUserId` and `eventId`; the response stores `invitationId`.
 6. Run **List upcoming invitations by user** to check the invited player can find upcoming games.
 7. Run **My games as invited user** to check `joined: false`.
-8. Run **Mark invitation as joined**, then rerun **My games as invited user** and
-   **Get invitation** to check `joined: true`.
-9. Run **Get game code** to check the game-code route.
-10. Delete test data in reverse dependency order: invitation, event, game, invited user, host user.
+8. Run **Mark invitation as joined** while the game is upcoming; it should return `409 Conflict`.
+9. Run **End game**, then **Mark invitation as joined** again; it should still return `409 Conflict`.
+10. Run **Update game** to move its start into the past and clear its end date.
+11. Rerun **Mark invitation as joined**; it should succeed. Rerun **My games as invited user**
+    and **Get invitation** to check `joined: true`.
+12. Run **Get game code** to check the game-code route.
+13. Delete test data in reverse dependency order: invitation, event, game, invited user, host user.
 
 The create requests save returned IDs as Bruno runtime variables for subsequent requests.
