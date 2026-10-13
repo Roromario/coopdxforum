@@ -1,4 +1,4 @@
-package com.coopdxforum.coopDXforum.controllers;
+package com.coopdxforum.coopDXforum.configuration;
 
 import java.net.URI;
 
