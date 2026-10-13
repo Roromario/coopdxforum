@@ -45,7 +45,7 @@ public class InvitationController {
         return invitationRepository.findById(id)
                 .map(InvitationConverter::toDTO)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invitation not found"));
     }
 
     @PostMapping
@@ -65,7 +65,7 @@ public class InvitationController {
                     invitation.setEvent(findEvent(invitationDetails.getEventId()));
                     return ResponseEntity.ok(InvitationConverter.toDTO(invitationRepository.save(invitation)));
                 })
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invitation not found"));
     }
 
     private User findUser(Integer userId) {
@@ -86,10 +86,10 @@ public class InvitationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteInvitation(@PathVariable Integer id) {
-        if (invitationRepository.existsById(id)) {
-            invitationRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
+        if (!invitationRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invitation not found");
         }
-        return ResponseEntity.notFound().build();
+        invitationRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

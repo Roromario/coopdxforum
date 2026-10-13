@@ -52,7 +52,7 @@ public class EventController {
         return eventRepository.findById(id)
                 .map(EventConverter::toDTO)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
     }
 
     @PostMapping
@@ -75,7 +75,7 @@ public class EventController {
                     event.setCreatedAt(eventDetails.getCreatedAt());
                     return ResponseEntity.ok(EventConverter.toDTO(eventRepository.save(event)));
                 })
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
     }
 
     private Game findGame(Integer gameId) {
@@ -88,10 +88,10 @@ public class EventController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable Integer id) {
-        if (eventRepository.existsById(id)) {
-            eventRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
+        if (!eventRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
         }
-        return ResponseEntity.notFound().build();
+        eventRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

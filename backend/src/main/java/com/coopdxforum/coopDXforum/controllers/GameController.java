@@ -38,7 +38,7 @@ public class GameController {
         return gameRepository.findById(id)
                 .map(GameConverter::toDTO)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
     }
 
     @PostMapping
@@ -63,7 +63,7 @@ public class GameController {
                     game.setDateEndGame(gameDetails.getDateEndGame());
                     return ResponseEntity.ok(GameConverter.toDTO(gameRepository.save(game)));
                 })
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
     }
 
     private User findHostUser(Integer userId) {
@@ -76,10 +76,10 @@ public class GameController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGame(@PathVariable Integer id) {
-        if (gameRepository.existsById(id)) {
-            gameRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
+        if (!gameRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found");
         }
-        return ResponseEntity.notFound().build();
+        gameRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

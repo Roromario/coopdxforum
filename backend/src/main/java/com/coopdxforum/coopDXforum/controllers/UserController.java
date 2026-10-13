@@ -4,8 +4,10 @@ import com.coopdxforum.coopDXforum.converters.UserConverter;
 import com.coopdxforum.coopDXforum.models.dto.UserDTO;
 import com.coopdxforum.coopDXforum.models.entities.User;
 import com.coopdxforum.coopDXforum.repositories.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,7 +36,7 @@ public class UserController {
         return userRepository.findById(id)
                 .map(UserConverter::toDTO)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
     // POST : INSERT
@@ -61,16 +63,16 @@ public class UserController {
                     user.setMailAddress(userDetails.getMailAddress());
                     return ResponseEntity.ok(UserConverter.toDTO(userRepository.save(user)));
                 })
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
     // DELETE : REMOVE
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
+        if (!userRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
-        return ResponseEntity.notFound().build();
+        userRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
